@@ -40,7 +40,7 @@ A_EGO_COST = 0.
 J_EGO_COST = 5.0
 A_CHANGE_COST = 100.      # 낮을수록 선행차에 민강하게 반응. def:0.5
 DANGER_ZONE_COST = 100.
-CRASH_DISTANCE = .25
+CRASH_DISTANCE = .5
 LIMIT_COST = 1e6
 ACADOS_SOLVER_TYPE = 'SQP_RTI'
 
@@ -52,32 +52,20 @@ MAX_T = 10.0
 T_IDXS_LST = [index_function(idx, max_val=MAX_T, max_idx=N) for idx in range(N+1)]
 
 T_IDXS = np.array(T_IDXS_LST)
-FCW_IDXS = T_IDXS < 5.0   #추가 keiiog
 T_DIFFS = np.diff(T_IDXS, prepend=[0.])
 MIN_ACCEL = -4.0
-MAX_ACCEL = 2.5   #추가 keiiog
 T_FOLLOW = 1.45
 COMFORT_BRAKE = 2.5
 STOP_DISTANCE = 6.0
 
 def get_stopped_equivalence_factor(v_lead):
-  if not krkeegan:
-    return (v_lead**2) / (2 * COMFORT_BRAKE)   
-    #####################추가  keiiog
-  v_diff_offset = 0
-  if np.all(v_lead - v_ego > 0):
-    v_diff_offset = ((v_lead - v_ego) * 1.)
-    v_diff_offset = np.clip(v_diff_offset, 0, stop_distance / 2)
-    v_diff_offset = np.maximum(v_diff_offset * ((10 - v_ego)/10), 0)
-  distance = (v_lead**2) / (2 * COMFORT_BRAKE) + v_diff_offset
-  return distance
-  #####################추가  keiiog
+  return (v_lead**2) / (2 * COMFORT_BRAKE)
 
 def get_safe_obstacle_distance(v_ego, t_react=T_FOLLOW):
   return (v_ego**2) / (2 * COMFORT_BRAKE) + t_react * v_ego + STOP_DISTANCE
 
 def desired_follow_distance(v_ego, v_lead, t_react=T_FOLLOW):
-  return get_safe_obstacle_distance(v_ego, t_react) - get_stopped_equivalence_factor(v_lead, v_ego)  #v_ego, 추가 keiiog
+  return get_safe_obstacle_distance(v_ego, t_react) - get_stopped_equivalence_factor(v_lead)
 
 
 def gen_long_model():
