@@ -28,12 +28,12 @@ SOURCES = ['lead0', 'lead1', 'cruise', 'stop']
 
 X_DIM = 3
 U_DIM = 1
-PARAM_DIM = 8 #5
+PARAM_DIM = 5
 COST_E_DIM = 5
 COST_DIM = COST_E_DIM + 1
 CONSTR_DIM = 4
 
-X_EGO_OBSTACLE_COST = 5.#3.
+X_EGO_OBSTACLE_COST = 3.
 X_EGO_COST = 0.
 V_EGO_COST = 0.
 A_EGO_COST = 0.
